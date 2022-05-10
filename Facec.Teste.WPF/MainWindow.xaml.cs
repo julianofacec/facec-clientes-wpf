@@ -28,28 +28,38 @@ namespace Facec.Teste.WPF
             InitializeComponent();
         }
 
+
         private void btnGravar_Click(object sender, RoutedEventArgs e)
         {
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri("https://localhost:44355/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.Timeout = TimeSpan.FromSeconds(10);
-
-                var json = new JavaScriptSerializer().Serialize(new Cliente(txtDocumento.Text, txtNome.Text));
-                var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = client.PostAsync("clientes", conteudo).Result;
-
-                if (!response.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    MessageBox.Show("Erro ao gravar cliente!");
-                    return;
-                }
+                    client.BaseAddress = new Uri("https://facec-webapi-2022.herokuapp.com/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.Timeout = TimeSpan.FromSeconds(10);
 
-                MessageBox.Show("Sucesso ao gravar cliente!");
+                    var json = new JavaScriptSerializer().Serialize(new Cliente(txtDocumento.Text, txtNome.Text));
+                    var conteudo = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync("clientes", conteudo).Result;
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show($"Erro ao gravar cliente!" +
+                            $"\n {response.Content.ReadAsStringAsync().Result}");
+                        return;
+                    }
+
+                    MessageBox.Show("Sucesso ao gravar cliente!");
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
     }
 }
