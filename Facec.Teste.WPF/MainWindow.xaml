@@ -22,6 +22,8 @@
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -38,9 +40,21 @@
                 <Button x:Name="btnGravar" Grid.Column="5" Click="btnGravar_Click"
                     Style="{StaticResource MaterialDesignPaperLightButton}"
                     ToolTip="Resource name: MaterialDesignPaperLightButton"
-                    Content="GRAVAR"
-                    IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                    Content="GRAVAR"/>
+
+                <Button x:Name="btnListar" Grid.Column="7" Click="btnListar_Click"
+                    Style="{StaticResource MaterialDesignPaperLightButton}"
+                    ToolTip="Resource name: MaterialDesignPaperLightButton"
+                    Content="LISTAR"/>
             </Grid>
+
+
+            <DataGrid x:Name="dbgClientes" Grid.Row="1"
+                ItemsSource="{Binding Clientes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                SelectedItem="{Binding ClienteSelecionado, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                CanUserAddRows="False"
+                SelectionUnit="Cell"
+                SelectionMode="Extended" />
         </Grid>
     </Grid>
 </Window>

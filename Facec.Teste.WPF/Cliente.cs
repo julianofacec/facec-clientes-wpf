@@ -2,14 +2,16 @@
 
 namespace Facec.Teste.WPF
 {
-    internal class Cliente
+    public class Cliente
     {
 
         [JsonPropertyName("documento")]
-        public string Documento { get; private set; }
+        public string Documento { get; set; } = string.Empty;
 
         [JsonPropertyName("nome")]
-        public string Nome { get; private set; }
+        public string Nome { get; set; } = string.Empty;
+
+        public Cliente() { }
 
         public Cliente(string documento, string nome)
         {

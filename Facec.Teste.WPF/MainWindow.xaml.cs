@@ -1,6 +1,8 @@
 ﻿using Nancy.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -23,9 +25,13 @@ namespace Facec.Teste.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<Cliente> Clientes { get; set; } = new ObservableCollection<Cliente>();
+        public Cliente ClienteSelecionado { get; set; } = new Cliente();
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
 
@@ -60,6 +66,38 @@ namespace Facec.Teste.WPF
                 MessageBox.Show(ex.Message);
             }
             
+        }
+
+        private void btnListar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://facec-webapi-2022.herokuapp.com/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.Timeout = TimeSpan.FromSeconds(10);
+
+                    var response = client.GetAsync("clientes").Result;
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show($"Erro ao listar cliente(s)!" +
+                            $"\n {response.Content.ReadAsStringAsync().Result}");
+                        return;
+                    }
+
+                    Clientes.Clear();
+                    Clientes = new JavaScriptSerializer().Deserialize<ObservableCollection<Cliente>>(response.Content.ReadAsStringAsync().Result);
+                    
+                    MessageBox.Show("Sucesso ao listar cliente(s)!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
