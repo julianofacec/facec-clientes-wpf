@@ -25,15 +25,20 @@ namespace Facec.Teste.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<Cliente> Clientes { get; set; } = new ObservableCollection<Cliente>();
+        public ObservableCollection<Cliente> Clientes { get; private set; } = new ObservableCollection<Cliente>();
         public Cliente ClienteSelecionado { get; set; } = new Cliente();
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
+            SetDataContext();
         }
 
+        private void SetDataContext()
+        {
+            DataContext = null;
+            DataContext = this;
+        }
 
         private void btnGravar_Click(object sender, RoutedEventArgs e)
         {
@@ -90,7 +95,7 @@ namespace Facec.Teste.WPF
 
                     Clientes.Clear();
                     Clientes = new JavaScriptSerializer().Deserialize<ObservableCollection<Cliente>>(response.Content.ReadAsStringAsync().Result);
-                    
+
                     MessageBox.Show("Sucesso ao listar cliente(s)!");
                 }
             }
